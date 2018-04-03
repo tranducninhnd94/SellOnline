@@ -1,0 +1,1 @@
+lấy dữ liệu từ database --> return về 1 callback or Promise
