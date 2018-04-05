@@ -11,6 +11,11 @@ const attributesUser = ["id", "email", "fullname", "phone_number", "password", "
 const attributesRole = ["id", "name"];
 
 class StoreService {
+  // for admin
+  updateStore(nameUnique, infoUpdate) {
+    return models.Store.update(infoUpdate, { where: { name_unique: nameUnique } });
+  }
+
   createStore(userInfo, storeInfo) {
     return new Promise((resolve, reject) => {
       return sequelize
@@ -43,43 +48,12 @@ class StoreService {
   }
 
   findByNameUnique(nameUnique) {
-    return models.Store.findOne({
-      where: { name_unique: nameUnique },
-      attributes: attributesStore,
-      include: [
-        {
-          model: models.User,
-          as: "users",
-          attributes: attributesUser,
-          through: {
-            attributes: []
-          },
-          include: [
-            {
-              model: models.Role,
-              as: "roles",
-              attributes: attributesRole,
-              through: { attributes: [] }
-            }
-          ]
-        },
-        {
-          model: models.User,
-          as: "owner"
-        }
-      ]
-    });
-  }
-
-  findByNameUnique(nameUnique) {
     return models.Store.findOne({ where: { name_unique: nameUnique } });
   }
 
   findByName(name) {
     return models.Store.findOne({ where: { name } });
   }
-
-  updateStore() {}
 }
 
 module.exports = StoreService;

@@ -26,7 +26,7 @@ module.exports = {
       address: Joi.string()
         .max(500)
         .required(),
-      roles: Joi.array().items(Joi.object({ id: 1, name: "ADMIN" }), Joi.object({ id: 2, name: "USER" }))
+      roles: Joi.array().items(Joi.object({ id: 1, name: "ADMIN" }), Joi.object({ id: 2, name: "EMPLOYEE" }))
     }
   },
 
@@ -57,7 +57,56 @@ module.exports = {
       address: Joi.string()
         .max(500)
         .required(),
-      roles: Joi.array().items(Joi.object({ id: 1, name: "ADMIN" }), Joi.object({ id: 2, name: "USER" }))
+      roles: Joi.array().items(Joi.object({ id: 1, name: "ADMIN" }), Joi.object({ id: 2, name: "EMPLOYEE" }))
+    }
+  },
+
+  updateRoleOfUser: {
+    body: {
+      storeId: Joi.number().required(),
+      userId: Joi.number().required(),
+      roles: Joi.array().items(Joi.object({ id: 1, name: "ADMIN" }), Joi.object({ id: 2, name: "EMPLOYEE" }))
+    }
+  },
+
+  // store
+  createStore: {
+    body: {
+      name: Joi.string()
+        .min(3)
+        .max(100)
+        .required(),
+      description: Joi.string()
+        .max(5000)
+        .required(),
+      address: Joi.string()
+        .max(500)
+        .required(),
+      name_unique: Joi.string()
+        .alphanum()
+        .min(4)
+        .max(20)
+        .required()
+    }
+  },
+
+  updateStore: {
+    body: {
+      name: Joi.string()
+        .min(3)
+        .max(100)
+        .required(),
+      description: Joi.string()
+        .max(5000)
+        .required(),
+      address: Joi.string()
+        .max(500)
+        .required()
+      // name_unique: Joi.string()
+      //   .alphanum()
+      //   .min(4)
+      //   .max(20)
+      //   .required()
     }
   }
 };

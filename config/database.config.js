@@ -1,6 +1,6 @@
 module.exports = {
   development: {
-    database: "startup_db",
+    database: "sell_db",
     username: "root",
     password: "23101994",
     options: {

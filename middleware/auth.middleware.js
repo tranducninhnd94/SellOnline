@@ -12,42 +12,42 @@ class Auth {
   }
 
   isAdmin(req, res, next) {
+    let storeId = req.params.storeId;
     let nameUnique = req.params.nameUnique;
+    let isPass = false;
     if (req.user) {
       let user = req.user;
       let stories = user.stories;
       if (stories) {
-        stories.forEach(store => {
-          if (store.name_unique == nameUnique) {
-            let roles = store.roles;
+        stories.forEach(tmp => {
+          let store = tmp.store;
+          let roles = tmp.roles;
+          if (store.id == storeId) {
             if (roles) {
               roles.forEach(role => {
                 if (role == "ADMIN") {
+                  isPass = true;
                   next();
                 }
-              })
-              res.status(403);
-              let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin");
-              return res.json(error);
-            } else {
-              res.status(403);
-              let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin");
-              return res.json(error);
+              });
             }
           }
         });
+        if (!isPass) {
+          res.status(403);
+          let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin");
+          return res.json(error);
+        }
       } else {
         res.status(403);
         let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin");
         return res.json(error);
       }
-    }
-    else {
+    } else {
       res.status(403);
       let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin");
       return res.json(error);
     }
-
   }
 
   isEmployee(req, res, next) {
@@ -57,36 +57,30 @@ class Auth {
       let stories = user.stories;
       if (stories) {
         stories.forEach(store => {
-          if (store.name_unique == nameUnique) {
+          if (store.id == storeId) {
             let roles = store.roles;
             if (roles) {
               roles.forEach(role => {
                 if (role == "ADMIN" || role == "EMPLOYEE") {
                   next();
                 }
-              })
-              res.status(403);
-              let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin or Employee");
-              return res.json(error);
-            } else {
-              res.status(403);
-              let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin or Employee");
-              return res.json(error);
+              });
             }
           }
         });
+        res.status(403);
+        let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin or Employee");
+        return res.json(error);
       } else {
         res.status(403);
-        let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin");
+        let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin or Employee");
         return res.json(error);
       }
-    }
-    else {
+    } else {
       res.status(403);
-      let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin");
+      let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin or Employee");
       return res.json(error);
     }
-
   }
 }
 

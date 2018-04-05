@@ -11,47 +11,45 @@ const attributesRole = ["id", "name"];
 const attributesStore = ["id", "name", "name_unique", "description", "owner_id", "createdAt", "updatedAt"];
 
 class UserService {
+  // for user
   createUserV2(userCreate) {
     return models.User.create(userCreate);
-
-    // return new Promise((resolve, reject) => {
-    //   return sequelize
-    //     .transaction(t => {
-    //       return models.User.create(userCreate, { transaction: t }).then(user => {
-    //         return models.Role.findAll({ where: { [Op.or]: roleCreate } }, { transaction: t }).then(roles => {
-    //           return user.setRoles(roles, { transaction: t });
-    //         });
-    //       });
-    //     })
-    //     .then(result => {
-    //       return resolve(result);
-    //     })
-    //     .catch(error => {
-    //       return reject(error);
-    //     });
-    // });
   }
 
-  updateUser(email, userUpdate, rolesUpdate) {
-    return new Promise((resolve, reject) => {
-      return sequelize
-        .transaction(t => {
-          return models.User.findOne({ where: { email } }).then(user1 => {
-            return user1.update(userUpdate, { transaction: t }).then(user2 => {
-              return models.Role.findAll({ where: { [Op.or]: rolesUpdate } }, { transaction: t }).then(roles => {
-                return user2.setRoles(roles, { transaction: t });
-              });
+  // for admin
+  updateRoles(storeId, userId, rolesUpdate) {
+    return sequelize.transaction(t => {
+      return models.UserStore.findOne({ where: { store_id: storeId, user_id: userId } }, { transaction: t }).then(
+        userStore => {
+          if (userStore) {
+            return models.Role.findAll(
+              {
+                where: {
+                  [Op.or]: rolesUpdate
+                }
+              },
+              { transaction: t }
+            ).then(roles => {
+              return userStore.setRoles(roles, { transaction: t });
             });
-          });
-        })
-        .then(result => {
-          console.log("result :", result);
-          return resolve(result);
-        })
-        .catch(error => {
-          console.log("error : ", error);
-          return reject(error);
-        });
+          } else {
+            return models.UserStore.create({ user_id: userId, store_id: storeId }, { transaction: t }).then(
+              userStore => {
+                return models.Role.findAll({ where: { [Op.or]: rolesUpdate } }, { transaction: t }).then(roles => {
+                  return userStore.setRoles(roles, { transaction: t });
+                });
+              }
+            );
+          }
+        }
+      );
+    });
+  }
+
+  // for user
+  updateUser(email, userUpdate) {
+    return models.User.findOne({ where: { email } }).then(user => {
+      return user.update(userUpdate);
     });
   }
 
@@ -76,18 +74,6 @@ class UserService {
               }
             }
           ]
-        }
-      ]
-    });
-  }
-
-  findRoleOfUser(userId) {
-    return models.UserStore.findAll({
-      where: { user_id: userId },
-      include: [
-        {
-          model: models.UserStore,
-          as: "storiesUser"
         }
       ]
     });

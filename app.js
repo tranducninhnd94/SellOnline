@@ -11,32 +11,32 @@ var constants = require("./common/constants");
 var models = require("./models/index");
 models.sequelize.query("SET FOREIGN_KEY_CHECKS = 0", { raw: true }).then(function (results) {
   models.sequelize
-    .sync({ force: false })
+    .sync({ force: true })
     .then(() => {
       console.log("database init successly");
       // create Role
 
-      // models.Role.destroy({
-      //   where: {},
-      //   truncate: true
-      // }).then(() => {
-      //   models.Role.bulkCreate([
-      //     {
-      //       id: 1,
-      //       name: "ADMIN"
-      //     },
-      //     {
-      //       id: 2,
-      //       name: "EMPLOYEE"
-      //     }
-      //   ])
-      //     .then(roleRes => {
-      //       console.log("Role is created !");
-      //     })
-      //     .catch(error => {
-      //       console.log(error);
-      //     });
-      // })
+      models.Role.destroy({
+        where: {},
+        truncate: true
+      }).then(() => {
+        models.Role.bulkCreate([
+          {
+            id: 1,
+            name: "ADMIN"
+          },
+          {
+            id: 2,
+            name: "EMPLOYEE"
+          }
+        ])
+          .then(roleRes => {
+            console.log("Role is created !");
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      });
     })
     .catch(error => {
       console.log(error);

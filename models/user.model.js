@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       // customize default
       timestamps: true, // add attributes updateAt createAt
-      undersored: true, // m?c d?nh camelcase stype --> underscore style
+      underscored: true, // m?c d?nh camelcase stype --> underscore style
       freezeTableName: true, // m?c d?nh tên table s? là s? nhi?u --> k dùng s? nhi?u
       tableName: "user"
     }

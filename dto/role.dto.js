@@ -1,28 +1,19 @@
 "use strict";
 class RoleDTO {
-    constructor() {
-    }
+  constructor() {}
 
-    setId() {
-        this.id = id;
-    }
+  setId(id) {
+    this.id = id;
+  }
 
-    getId() {
-        return this.id;
-    }
+  setName(name) {
+    this.name = name;
+  }
 
-    setName(name) {
-        this.name = name;
-    }
-
-    getName() {
-        return this.name;
-    }
-
-    setAll(obj) {
-        this.id = obj.id;
-        this.name = obj.name;
-    }
+  setAll(obj) {
+    this.id = obj.id;
+    this.name = obj.name;
+  }
 }
 
 module.exports = RoleDTO;

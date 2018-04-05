@@ -1,8 +1,6 @@
-"use strict"
+"use strict";
 class StoreDTO {
-  constructor() {
-
-  }
+  constructor() {}
 
   setId(id) {
     this.id = id;
@@ -46,14 +44,12 @@ class StoreDTO {
 
   setInfoCreate(obj) {
     this.name = obj.name;
-    this.name_unique = obj.name_unique;
+    // this.name_unique = obj.name_unique;
     this.description = obj.description;
     this.address = obj.address;
   }
 
-  setInfoUpdate(obj) {
-
-  }
+  setInfoUpdate(obj) {}
 
   setInfoResponse(obj) {
     this.id = obj.id;
@@ -67,9 +63,6 @@ class StoreDTO {
     this.owner = owner;
   }
 
-  setInfoDetailsResponse(obj) {
-
-  }
-
+  setInfoDetailsResponse(obj) {}
 }
 module.exports = StoreDTO;
