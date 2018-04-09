@@ -9,7 +9,7 @@ const UserDTO = require("../../../dto/user.dto");
 const RoleDTO = require("../../../dto/role.dto");
 const StoreDTO = require("../../../dto/store.dto");
 
-const StandardResponse = require("../../../dto/standard.response");
+const StandardResponse = require("../../../common/standard.response");
 const SuccessResponse = StandardResponse.SuccessResponse;
 const ErrorResponse = StandardResponse.ErrorResponse;
 
@@ -35,6 +35,38 @@ class UserManagerController {
       .then(result => {
         console.log("result: ", JSON.stringify(result));
         let objectSuccess = new SuccessResponse(200, "Success", "Update role for user");
+        res.status(200);
+        return res.json(objectSuccess);
+      })
+      .catch(error => {
+        console.log("error :", error);
+        res.status(500);
+        let errorResponse = new ErrorResponse(500, "Internal Server", error);
+        return res.json(errorResponse);
+      });
+  }
+
+  getAllUserOfStore(req, res, next) {
+    let storeId = req.params.storeId;
+    userService
+      .getAllUserOfStore(storeId)
+      .then(result => {
+        console.log("result: ", JSON.stringify(result));
+
+        let usersResponse = new Array();
+
+        if (result) {
+          result.forEach(tmp => {
+            let user = tmp.user;
+            let roles = tmp.roles;
+            let userRespone = new UserDTO();
+            userRespone.setInfoResponse(user);
+            userRespone.setRoles(roles);
+            usersResponse.push(userRespone);
+          });
+        }
+
+        let objectSuccess = new SuccessResponse(200, "Success", usersResponse);
         res.status(200);
         return res.json(objectSuccess);
       })

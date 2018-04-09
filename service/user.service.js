@@ -4,11 +4,11 @@ const Sequelize = models.Sequelize;
 const SequelizeError = require("../common/SequelizeError");
 const Op = Sequelize.Op;
 
-const attributesUser = ["id", "email", "fullname", "phone_number", "password", "address", "createdAt", "updatedAt"];
+const attributesUser = ["id", "email", "fullname", "phone_number", "password", "address", "created_at", "updated_at"];
 
 const attributesRole = ["id", "name"];
 
-const attributesStore = ["id", "name", "name_unique", "description", "owner_id", "createdAt", "updatedAt"];
+const attributesStore = ["id", "name", "name_unique", "description", "owner_id", "created_at", "updated_at"];
 
 class UserService {
   // for user
@@ -46,7 +46,31 @@ class UserService {
     });
   }
 
+  getAllUserOfStore(storeId) {
+    return models.UserStore.findAll({
+      where: { store_id: storeId },
+      include: [
+        {
+          model: models.User,
+          as: "user"
+        },
+        {
+          model: models.Role,
+          as: "roles",
+          through: {
+            attributes: []
+          }
+        }
+      ]
+    });
+  }
+
   // for user
+
+  updatePassword(newPassword, user) {
+    return models.User.update({ password: newPassword }, { where: { email: user.email } });
+  }
+
   updateUser(email, userUpdate) {
     return models.User.findOne({ where: { email } }).then(user => {
       return user.update(userUpdate);

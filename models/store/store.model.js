@@ -47,6 +47,26 @@ module.exports = (sequelize, DataTypes) => {
       as: "users",
       foreignKey: "store_id"
     });
+
+    // store-image-cover
+    models.Store.belongsToMany(models.FileUpload, {
+      as: "bannerImages",
+      through: models.StoreBannerImage,
+      foreignKey: "store_id"
+    });
+
+    // type
+    models.Store.belongsToMany(models.Type, {
+      as: "types",
+      through: models.StoreType,
+      foreignKey: "store_id"
+    });
+
+    //product
+    models.Store.hasMany(models.Product, {
+      as: "products",
+      foreignKey: "store_id"
+    });
   };
   return Store;
 };

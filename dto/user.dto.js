@@ -50,6 +50,10 @@ class UserDTO {
     return this.address;
   }
 
+  setRoles(roles) {
+    this.roles = roles;
+  }
+
   setInfoCreate(obj) {
     this.email = obj.email;
     this.password = obj.password;
@@ -64,9 +68,9 @@ class UserDTO {
     this.fullname = obj.fullname;
     this.phone_number = obj.phone_number;
     this.address = obj.address;
-    this.createAt = obj.createAt;
-    this.updateAt = obj.updateAt;
-    this.roles = obj.roles;
+    this.created_at = obj.created_at;
+    this.updated_at = obj.updated_at;
+    // this.roles = obj.roles;
   }
 
   setInfoUpdate(obj) {

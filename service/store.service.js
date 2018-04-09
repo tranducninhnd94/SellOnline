@@ -4,9 +4,9 @@ const Sequelize = models.Sequelize;
 const SequelizeError = require("../common/SequelizeError");
 const Op = Sequelize.Op;
 
-const attributesStore = ["id", "name", "name_unique", "description", "owner_id", "createdAt", "updatedAt"];
+const attributesStore = ["id", "name", "name_unique", "description", "owner_id", "created_at", "updated_at"];
 
-const attributesUser = ["id", "email", "fullname", "phone_number", "password", "address", "createdAt", "updatedAt"];
+const attributesUser = ["id", "email", "fullname", "phone_number", "password", "address", "created_at", "updated_at"];
 
 const attributesRole = ["id", "name"];
 
@@ -16,7 +16,7 @@ class StoreService {
     return models.Store.update(infoUpdate, { where: { name_unique: nameUnique } });
   }
 
-  createStore(userInfo, storeInfo) {
+  createStore(userInfo, storeInfo, bannerImages, typesInfo) {
     return new Promise((resolve, reject) => {
       return sequelize
         .transaction(t => {
@@ -28,7 +28,22 @@ class StoreService {
                     return userStore.setStore(store, { transaction: t }).then(() => {
                       return models.Role.findOne({ where: { name: "ADMIN" } }, { transaction: t }).then(role => {
                         return userStore.setRoles([role], { transaction: t }).then(() => {
-                          return store;
+                          // create banner-image
+                          return models.FileUpload.findAll(
+                            { where: { [Op.or]: bannerImages } },
+                            { transaction: t }
+                          ).then(files => {
+                            return store.setBannerImages(files, { transaction: t }).then(() => {
+                              // create type
+                              return models.Type.findAll({ where: { [Op.or]: typesInfo } }, { transaction: t }).then(
+                                types => {
+                                  return store.setTypes(types, { transaction: t }).then(() => {
+                                    return store;
+                                  });
+                                }
+                              );
+                            });
+                          });
                         });
                       });
                     });

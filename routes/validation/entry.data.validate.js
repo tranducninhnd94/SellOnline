@@ -30,6 +30,14 @@ module.exports = {
     }
   },
 
+  changePassword: {
+    body: {
+      password: Joi.string()
+        .alphanum()
+        .required()
+    }
+  },
+
   login: {
     body: {
       email: Joi.string()
@@ -86,6 +94,13 @@ module.exports = {
         .alphanum()
         .min(4)
         .max(20)
+        .required(),
+      bannerImages: Joi.array()
+        .items(Joi.object().keys({ id: Joi.number().required(), originalname: Joi.string().required() }))
+        .required(),
+      types: Joi.array()
+        .items(Joi.object().keys({ id: Joi.number().required(), name: Joi.string().required() }))
+        .min(1)
         .required()
     }
   },
@@ -107,6 +122,31 @@ module.exports = {
       //   .min(4)
       //   .max(20)
       //   .required()
+    }
+  },
+
+  // product
+
+  createProduct: {
+    body: {
+      name: Joi.string()
+        .min(3)
+        .max(30)
+        .required(),
+
+      original_price: Joi.number().required(),
+
+      sale_price: Joi.number().required(),
+
+      images: Joi.array().items(Joi.object().keys({ id: Joi.number().required(), name: Joi.string().required() })),
+
+      tags: Joi.array().items(Joi.object().keys({ id: Joi.number().required(), name: Joi.string().required() })),
+
+      promotions: Joi.array().items(Joi.object().keys({ id: Joi.number().required(), name: Joi.string().required() })),
+
+      description: Joi.string()
+        .max(5000)
+        .required()
     }
   }
 };

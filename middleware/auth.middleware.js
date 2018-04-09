@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
-const standardResponse = require("../dto/standard.response");
-const ErrorResponse = standardResponse.ErrorResponse;
+const StandardResponse = require("../common/standard.response");
+const ErrorResponse = StandardResponse.ErrorResponse;
 class Auth {
   isLogin(req, res, next) {
     if (req.user) next();
@@ -51,26 +51,32 @@ class Auth {
   }
 
   isEmployee(req, res, next) {
+    let storeId = req.params.storeId;
     let nameUnique = req.params.nameUnique;
+    let isPass = false;
     if (req.user) {
       let user = req.user;
       let stories = user.stories;
       if (stories) {
-        stories.forEach(store => {
+        stories.forEach(tmp => {
+          let store = tmp.store;
+          let roles = tmp.roles;
           if (store.id == storeId) {
-            let roles = store.roles;
             if (roles) {
               roles.forEach(role => {
                 if (role == "ADMIN" || role == "EMPLOYEE") {
+                  isPass = true;
                   next();
                 }
               });
             }
           }
         });
-        res.status(403);
-        let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin or Employee");
-        return res.json(error);
+        if (!isPass) {
+          res.status(403);
+          let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin or Employee");
+          return res.json(error);
+        }
       } else {
         res.status(403);
         let error = new ErrorResponse(403, "FORBIDDEN_TO_ACCESS", "You are not Admin or Employee");

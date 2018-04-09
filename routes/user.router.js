@@ -15,10 +15,17 @@ const Auth = require("../middleware/auth.middleware");
 const auth = new Auth();
 router
   //user
+  .post(
+    "/user/password/change",
+    validation(entryDataValidate.changePassword),
+    auth.isLogin,
+    userController.changePassword
+  )
   .post("/user/create", validation(entryDataValidate.createUser), userController.createUser)
   .post("/user/login", validation(entryDataValidate.login), userController.login)
   //admin
   .post("/user/update", validation(entryDataValidate.updateUser), auth.isLogin, userController.updateUser)
+  .get("/admin/store/:storeId/:nameUnique/user/list", auth.isAdmin, userManagerController.getAllUserOfStore)
   .post(
     "/admin/store/:storeId/:nameUnique/user/role/update",
     validation(entryDataValidate.updateRoleOfUser),

@@ -9,7 +9,7 @@ const UserDTO = require("../../dto/user.dto");
 const RoleDTO = require("../../dto/role.dto");
 const StoreDTO = require("../../dto/store.dto");
 
-const StandardResponse = require("../../dto/standard.response");
+const StandardResponse = require("../../common/standard.response");
 const SuccessResponse = StandardResponse.SuccessResponse;
 const ErrorResponse = StandardResponse.ErrorResponse;
 
@@ -22,11 +22,11 @@ const salt = 10;
 
 class UserController {
   createUser(req, res, next) {
+    console.log("create user with {}", req.body);
     let objRequest = req.body;
-
-    console.log("create user with {}", objRequest);
     let userCreate = new UserDTO();
     userCreate.setInfoCreate(objRequest);
+
 
     userService
       .createUserV2(userCreate)
@@ -35,7 +35,7 @@ class UserController {
         userRes.setInfoResponse(value);
         let successResponse = new SuccessResponse(200, "Success", userRes);
         res.status(200);
-        return res.json(successResponse);
+        return res.json(value);
       })
       .catch(error => {
         console.log("error :", error);
@@ -137,6 +137,44 @@ class UserController {
         res.status(500);
         res.json(errorResponse);
       });
+  }
+
+  changePassword(req, res, next) {
+    let user = req.user;
+    let _body = req.body;
+    let passwordReq = _body.password;
+
+    bcrypt.genSalt(constants.SALT, (error, salt) => {
+      if (error) {
+        console.log(error);
+        let errorResponse = new ErrorResponse(500, "Internal Server");
+        res.status(500);
+        res.json(errorResponse);
+      } else {
+        bcrypt.hash(passwordReq, salt, null, (error, newPassword) => {
+          if (error) {
+            console.log(error);
+            let errorResponse = new ErrorResponse(500, "Internal Server");
+            res.status(500);
+            res.json(errorResponse);
+          } else {
+            userService
+              .updatePassword(newPassword, user)
+              .then(result => {
+                let successError = new SuccessResponse(200, "Success", result);
+                res.status(200);
+                res.json(successError);
+              })
+              .catch(error => {
+                console.log(error);
+                let errorResponse = new ErrorResponse(500, "Internal Server");
+                res.status(500);
+                res.json(errorResponse);
+              });
+          }
+        });
+      }
+    });
   }
 }
 module.exports = UserController;

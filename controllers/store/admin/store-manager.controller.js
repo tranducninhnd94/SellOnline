@@ -6,7 +6,7 @@ const StoreService = require("../../../service/store.service");
 
 const StoreDTO = require("../../../dto/store.dto");
 
-const StandardResponse = require("../../../dto/standard.response");
+const StandardResponse = require("../../../common/standard.response");
 const SuccessResponse = StandardResponse.SuccessResponse;
 const ErrorResponse = StandardResponse.ErrorResponse;
 
@@ -18,6 +18,9 @@ class StoreManagerController {
     let _body = req.body;
     let newStore = new StoreDTO();
     newStore.setInfoCreate(_body);
+
+    let bannerImages = _body.bannerImages;
+    let types = _body.types;
 
     Promise.all(
       [storeService.findByName(_body.name), storeService.findByNameUnique(_body.name_unique)]
@@ -36,7 +39,7 @@ class StoreManagerController {
         }
         if (value[0] == null && value[1] == null) {
           storeService
-            .createStore(userInfo, newStore)
+            .createStore(userInfo, newStore, bannerImages, types)
             .then(result => {
               res.status(200);
               let storeResponse = new StoreDTO();

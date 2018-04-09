@@ -1,7 +1,7 @@
 const constants = require("../common/constants");
 const jwt = require("jsonwebtoken");
 
-const StandardResponse = require("../dto/standard.response");
+const StandardResponse = require("../common/standard.response");
 const ErrorResponse = StandardResponse.ErrorResponse;
 class EntryMiddleware {
   entry(req, res, next) {

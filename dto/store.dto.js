@@ -44,12 +44,16 @@ class StoreDTO {
 
   setInfoCreate(obj) {
     this.name = obj.name;
-    // this.name_unique = obj.name_unique;
+    this.name_unique = obj.name_unique;
     this.description = obj.description;
     this.address = obj.address;
   }
 
-  setInfoUpdate(obj) {}
+  setInfoUpdate(obj) {
+    this.name = obj.name;
+    this.description = obj.description;
+    this.address = obj.address;
+  }
 
   setInfoResponse(obj) {
     this.id = obj.id;
@@ -57,6 +61,8 @@ class StoreDTO {
     this.name_unique = obj.name_unique;
     this.description = obj.description;
     this.address = obj.address;
+    this.created_at = obj.created_at;
+    this.updated_at = obj.updated_at;
   }
 
   setOwner(owner) {

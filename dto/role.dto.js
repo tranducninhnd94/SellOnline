@@ -14,6 +14,11 @@ class RoleDTO {
     this.id = obj.id;
     this.name = obj.name;
   }
+
+  setInfoResponse(obj) {
+    this.id = obj.id;
+    this.name = obj.name;
+  }
 }
 
 module.exports = RoleDTO;

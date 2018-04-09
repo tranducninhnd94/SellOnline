@@ -19,10 +19,10 @@ module.exports = function(err, req, res, next) {
 
     let objError = { result: status, message: msg };
     res.status(status);
-    res.json(objError);
+    return res.json(objError);
     // }if (err instanceof SequelizeUniqueConstraintError){
   } else {
     res.status(err.status || 500);
-    res.json({ error: err });
+    return res.json({ error: err });
   }
 };
